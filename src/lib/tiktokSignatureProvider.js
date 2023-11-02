@@ -10,8 +10,8 @@ const axios = require('axios').create({
 
 let config = {
     enabled: true,
-    signProviderHost: 'https://tiktok.eulerstream.com/',
-    signProviderFallbackHosts: ['https://tiktok-sign.zerody.one/'],
+    signProviderHost: 'http://localhost:8080/',//'https://tiktok.eulerstream.com/',
+    signProviderFallbackHosts: [],//['https://tiktok-sign.zerody.one/'],
     extraParams: {},
 };
 
@@ -41,7 +41,9 @@ async function signRequest(providerPath, url, headers, cookieJar) {
     try {
         for (signHost of [config.signProviderHost, ...config.signProviderFallbackHosts]) {
             try {
-                signResponse = await axios.get(signHost + providerPath, { params, responseType: 'json' });
+                const hostUrl = signHost + providerPath;
+                console.log(`Querying ${hostUrl}`)
+                signResponse = await axios.get(hostUrl, { params, responseType: 'json' });
 
                 if (signResponse.status === 200 && typeof signResponse.data === 'object') {
                     break;

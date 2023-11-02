@@ -3,7 +3,7 @@ const util = require('node:util');
 const zlib = require('node:zlib');
 const unzip = util.promisify(zlib.unzip);
 
-let tiktokSchemaPath = require.resolve('../proto/tiktokSchema.proto');
+let tiktokSchemaPath = require.resolve('tiktokSchema.proto', { paths: ['../proto', __dirname + '/../proto', '/proto'] });
 let tiktokSchema = null;
 let config = {
     skipMessageTypes: [],
