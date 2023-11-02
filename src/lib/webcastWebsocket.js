@@ -1,10 +1,13 @@
+const { EventEmitter } = require('node:events');
+
 const Config = require('./webcastConfig.js');
-const websocket = require('websocket');
+const WebSocketClient = require('websocket').client;
 const { deserializeWebsocketMessage, serializeMessage } = require('./webcastProtobuf.js');
 
-class WebcastWebsocket extends websocket.client {
+class WebcastWebsocket extends EventEmitter {
     constructor(wsUrl, cookieJar, clientParams, wsParams, customHeaders, websocketOptions) {
         super();
+        this.client = new WebSocketClient();
         this.pingInterval = null;
         this.connection = null;
         this.wsParams = { ...clientParams, ...wsParams };
@@ -15,10 +18,13 @@ class WebcastWebsocket extends websocket.client {
         };
 
         this.#handleEvents();
-        this.connect(this.wsUrlWithParams, 'echo-protocol', Config.TIKTOK_URL_WEBCAST, this.wsHeaders, websocketOptions);
+        this.client.connect(this.wsUrlWithParams, 'echo-protocol', Config.TIKTOK_URL_WEBCAST, this.wsHeaders, websocketOptions);
     }
 
     #handleEvents() {
+        this.client.on('connect', (wsConnection) => this.emit('connect', wsConnection));
+        this.client.on('connectFailed', (err) => this.emit('connectFailed', err));
+
         this.on('connect', (wsConnection) => {
             this.connection = wsConnection;
             this.pingInterval = setInterval(() => this.#sendPing(), 10000);
