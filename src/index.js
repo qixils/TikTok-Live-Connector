@@ -390,17 +390,20 @@ class WebcastPushConnection extends EventEmitter {
     async #startFetchRoomPolling() {
         this.#isPollingEnabled = true;
 
-        let sleepMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-        while (this.#isPollingEnabled) {
+        let interval;
+        interval = setInterval(async () => {
+            if (!this.#isPollingEnabled) {
+                if (interval) {
+                    clearInterval(interval);
+                }
+                return;
+            }
             try {
                 await this.#fetchRoomData(false);
             } catch (err) {
                 this.#handleError(err, 'Error while fetching webcast data via request polling');
             }
-
-            await sleepMs(this.#options.requestPollingIntervalMs);
-        }
+        }, this.#options.requestPollingIntervalMs)
     }
 
     async #fetchRoomData(isInitial) {
