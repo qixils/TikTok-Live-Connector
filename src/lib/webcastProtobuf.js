@@ -3,7 +3,17 @@ const util = require('node:util');
 const zlib = require('node:zlib');
 const unzip = util.promisify(zlib.unzip);
 
-let tiktokSchemaPath = __dirname.split('/').slice(0, -2).join('/') + '/proto/tiktokSchema.proto';
+let tiktokSchemaPath;
+if (__dirname) {
+    tiktokSchemaPath = __dirname.split('/').slice(0, -2).join('/') + '/proto/tiktokSchema.proto';
+} else {
+    try {
+        tiktokSchemaPath = require.resolve('../proto/tiktokSchema.proto');
+    } catch (e) {
+        tiktokSchemaPath = require.resolve('tiktokSchema.proto', { paths: ['../proto', '/proto'] });
+    }
+}
+
 let tiktokSchema = null;
 let config = {
     skipMessageTypes: [],
