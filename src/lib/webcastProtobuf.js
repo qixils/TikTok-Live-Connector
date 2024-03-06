@@ -2,17 +2,7 @@ const protobufjs = require('protobufjs');
 const util = require('node:util');
 const zlib = require('node:zlib');
 const unzip = util.promisify(zlib.unzip);
-
-let tiktokSchemaPath;
-try {
-    tiktokSchemaPath = require.resolve('../proto/tiktokSchema.proto');
-} catch (e) {
-    try {
-        tiktokSchemaPath = require.resolve('tiktokSchema.proto', { paths: ['../proto', '/proto'] });
-    } catch (e) {
-        tiktokSchemaPath = __dirname.split('/').slice(0, -2).join('/') + '/proto/tiktokSchema.proto';
-    }
-}
+const { tiktokSchemaData } = require('./tiktokSchema.js')
 
 let tiktokSchema = null;
 let config = {
@@ -22,7 +12,7 @@ let config = {
 // Load & cache schema
 function loadTikTokSchema() {
     if (!tiktokSchema) {
-        tiktokSchema = protobufjs.loadSync(tiktokSchemaPath);
+        tiktokSchema = protobufjs.parse(tiktokSchemaData);
     }
 }
 

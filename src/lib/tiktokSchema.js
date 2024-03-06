@@ -1,4 +1,4 @@
-syntax = "proto3";
+export const tiktokSchemaData = `syntax = "proto3";
 package TikTok;
 
 // Data structure from im/fetch/ response
@@ -305,4 +305,4 @@ message WebcastWebsocketMessage {
 message WebcastWebsocketAck {
   uint64 id = 2;
   string type = 7;
-}
+}`
