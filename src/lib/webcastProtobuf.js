@@ -12,7 +12,7 @@ let config = {
 // Load & cache schema
 function loadTikTokSchema() {
     if (!tiktokSchema) {
-        tiktokSchema = protobufjs.parse(tiktokSchemaData);
+        tiktokSchema = protobufjs.parse(tiktokSchemaData).root;
     }
 }
 
