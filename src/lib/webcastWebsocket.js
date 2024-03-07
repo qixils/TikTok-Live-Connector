@@ -65,7 +65,7 @@ class WebcastWebsocket extends EventEmitter {
 
     #sendAck(id) {
         let ackMsg = serializeMessage('WebcastWebsocketAck', { type: 'ack', id });
-        this.connection.sendBytes(ackMsg);
+        this.connection.sendBytes(Buffer.from(ackMsg));
     }
 }
 
